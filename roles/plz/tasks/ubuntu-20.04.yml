@@ -11,6 +11,7 @@
     return_content: yes
     status_code: 200
     dest: "{{ plz['file_destination'] }}"
+    mode: '0666'
   register: data
   when: plz_code.user_input != ""
 
