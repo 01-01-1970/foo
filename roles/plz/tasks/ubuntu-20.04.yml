@@ -1,0 +1,38 @@
+---
+- name: Prompt For PLZ
+  pause:
+    prompt: "Enter the PLZ code"
+  register: plz_code
+
+- name: Get Information About PLZ
+  uri: 
+    url: "{{ plz['url'] }}{{ plz_code.user_input }}"
+    method: GET
+    return_content: yes
+    status_code: 200
+    dest: "{{ plz['file_destination'] }}"
+  register: data
+  when: plz_code.user_input != ""
+
+- name: Get Information About PLZ (Prompt Empty)
+  uri: 
+    url: "{{ plz['url'] }}{{ plz['code'] }}"
+    method: GET
+    return_content: yes
+    status_code: 200
+    dest: "{{ plz['file_destination'] }}"
+    mode: '0666'
+  register: data
+  when: plz_code.user_input == ""
+
+- name: Debug PLZ Name (Static). Example With register
+  debug:
+    var: data.json['records'][0]['fields']['plz_name']
+
+- name: Get PLZ Name With jq
+  shell: cat {{ plz['file_destination'] }} | jq .records[].fields.plz_name
+  register: jq
+
+- name: Debug PLZ Name (Dynamic). Example With jq Command
+  debug:
+    var: jq.stdout_lines

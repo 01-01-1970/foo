@@ -1,0 +1,37 @@
+---
+- name: Get Current Working Directory
+  set_fact:
+    current_dir: "{{ lookup('env', 'PWD') }}"
+
+- name: List Directory Content
+  shell: ls /tmp
+  register: dir_list
+  ignore_errors: true
+
+- name: Create {{ current_dir }}/{{ error_debugging['folder'] }} Directory (Example Module file)
+  local_action:
+    module: file
+    dest: "{{ current_dir }}/{{ error_debugging['folder'] }}"
+    mode: '0777'
+    state: directory
+
+- name: Create {{ current_dir }}/{{ error_debugging['folder'] }} Directory (Example Module raw)
+  local_action:
+    module: raw
+      mkdir -p -m '0777' "{{ current_dir }}/{{ error_debugging['folder'] }}"
+
+- name: Create stderr File
+  local_action:
+    module: copy 
+    content: "{{ dir_list.stderr_lines }}"
+    dest: "{{ current_dir }}/{{ error_debugging['folder'] }}/stderr.txt"
+    mode: '0666'
+  when: dir_list.rc != 0
+
+- name: Create stdout File
+  local_action:
+    module: copy 
+    content: "{{ dir_list.stdout_lines }}"
+    dest: "{{ current_dir }}/{{ error_debugging['folder'] }}/stdout.txt"
+    mode: '0666'
+  when: dir_list.rc == 0

@@ -1,0 +1,33 @@
+---
+# role package-install
+# put here your packages to install
+package_install: [
+  #"python3",
+  #"python3-dev",
+  #"python3-pip",
+  "git",
+  "nginx",
+  "jq",
+]
+
+# role error-debugging
+# this folder name will be created in your working directory. you can change it
+error_debugging: {
+  folder: "error-debugging",
+}
+
+# role plz {
+plz: {
+  url: "https://public.opendatasoft.com/api/records/1.0/search/?dataset=georef-germany-postleitzahl&q=&facet=note&facet=plz_code&refine.plz_code=",
+  file_destination: "/tmp/plz.json",
+  code: "86156",
+}
+
+# role nginx
+# create sub folder locations
+nginx: [
+  { location: "/a", alias: "/var/www/a" },
+  { location: "/b", alias: "/var/www/b" },
+  { location: "/c", alias: "/var/www/c" },
+]
+
