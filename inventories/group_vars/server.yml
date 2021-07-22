@@ -14,6 +14,7 @@ package_install: [
 # this folder name will be created in your working directory. you can change it
 error_debugging: {
   folder: "error-debugging",
+  folder_list: "/foo",
 }
 
 # role plz {
