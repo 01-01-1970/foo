@@ -30,7 +30,7 @@
     var: data.json['records'][0]['fields']['plz_name']
 
 - name: Get PLZ Name With jq
-  shell: cat {{ plz['file_destination'] }} | jq .records[].fields.plz_name
+  shell: jq .records[].fields.plz_name "{{ plz['file_destination'] }}"
   register: jq
 
 - name: Debug PLZ Name (Dynamic). Example With jq Command

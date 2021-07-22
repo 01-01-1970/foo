@@ -30,4 +30,3 @@ nginx: [
   { location: "/b", alias: "/var/www/b" },
   { location: "/c", alias: "/var/www/c" },
 ]
-

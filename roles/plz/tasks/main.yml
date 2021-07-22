@@ -1,4 +1,3 @@
 - name: run on ubuntu 20.04
   import_tasks: ubuntu-20.04.yml
   when: ansible_lsb.id|lower == 'ubuntu' and ansible_lsb.release == '20.04'
-  
