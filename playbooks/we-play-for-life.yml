@@ -1,7 +1,6 @@
 ---
 - name: Run My Roles
   hosts: server
-  become: yes
   roles:
     - package-install
     - error-debugging
