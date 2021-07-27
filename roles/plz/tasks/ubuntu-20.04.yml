@@ -19,7 +19,8 @@
     status_code: 200
     dest: "{{ plz['file_destination'] }}"
     mode: '0666'
-  register: data
+  # register: data
+  register: data_1
   when: plz_code.user_input != ""
 
 - name: Get Information About PLZ (Prompt Empty)
@@ -30,12 +31,23 @@
     status_code: 200
     dest: "{{ plz['file_destination'] }}"
     mode: '0666'
-  register: data
+  # register: data
+  register: data_2
   when: plz_code.user_input == ""
+
+# - name: Debug PLZ Name (Static). Example With register
+#   debug:
+#     var: data.json['records'][0]['fields']['plz_name']
 
 - name: Debug PLZ Name (Static). Example With register
   debug:
-    var: data.json['records'][0]['fields']['plz_name']
+    var: data_1.json['records'][0]['fields']['plz_name']
+  when: plz_code.user_input != ""
+
+- name: Debug PLZ Name (Static). Example With register
+  debug:
+    var: data_2.json['records'][0]['fields']['plz_name']
+  when: plz_code.user_input == ""
 
 - name: Get PLZ Name With jq
   shell: jq .records[].fields.plz_name "{{ plz['file_destination'] }}"
