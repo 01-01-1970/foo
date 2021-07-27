@@ -1,4 +1,11 @@
 ---
+- name: Install Required Packages
+  apt: pkg={{ package }} state=present
+  
+  vars:
+    package:
+      - nginx
+
 - name: Deploy nginx Default Configuration
   template:
     src: ./etc/nginx/sites-available/default.j2

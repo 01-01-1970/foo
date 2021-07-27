@@ -1,4 +1,11 @@
 ---
+- name: Install Required Packages
+  apt: pkg={{ package }} state=present
+  
+  vars:
+    package:
+      - jq
+
 - name: Prompt For PLZ
   pause:
     prompt: "Enter the PLZ code"
