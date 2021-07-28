@@ -1,8 +1,8 @@
-# ipoque
+# foo 
 
 ```
-git clone https://github.com/01-01-1970/ipoque.git
-cd ipoque
+git clone https://github.com/01-01-1970/foo.git
+cd foo
 ```
 
 as user
