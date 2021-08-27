@@ -1,0 +1,66 @@
+---
+- name: Install Required Packages
+  apt: pkg={{ package }} state=present
+  
+  vars:
+    package:
+      - jq
+
+- name: Prompt For PLZ
+  pause:
+    prompt: "Write the PLZ code or press Enter for default value {{ plz['code'] }}"
+  register: plz_code
+
+- name: Get Information About PLZ
+  uri: 
+    url: "{{ plz['url'] }}{{ plz_code.user_input }}"
+    method: GET
+    return_content: yes
+    status_code: 200
+    dest: "{{ plz['file_destination'] }}"
+    mode: '0666'
+  # register: data
+  register: data_1
+  when: plz_code.user_input != ""
+
+- name: "Get Information About PLZ: {{ plz['code'] }} (Prompt Empty)"
+  uri: 
+    url: "{{ plz['url'] }}{{ plz['code'] }}"
+    method: GET
+    return_content: yes
+    status_code: 200
+    dest: "{{ plz['file_destination'] }}"
+    mode: '0666'
+  # register: data
+  register: data_2
+  when: plz_code.user_input == ""
+
+- name: Get Information About PLZ (Example Command wget) 
+  raw: "wget -q -O {{ plz['file_destination'] }} '{{ plz['url'] }}{{ plz_code.user_input }}'"
+  when: plz_code.user_input != ""
+
+- name: "Get Information About PLZ: {{ plz['code'] }} (Prompt Empty) (Example Command wget)" 
+  raw: "wget -q -O {{ plz['file_destination'] }} '{{ plz['url'] }}{{ plz['code'] }}'"
+  when: plz_code.user_input == ""
+
+# - name: Debug PLZ Name (Static). Example With register
+#   debug:
+#     var: data.json['records'][0]['fields']['plz_name']
+
+# - name: Debug PLZ Name (Static). Example With register
+#   debug:
+#     var: data_1.json['records'][0]['fields']['plz_name']
+#   when: plz_code.user_input != ""
+
+# - name: Debug PLZ Name (Static). Example With register
+#   debug:
+#     var: data_2.json['records'][0]['fields']['plz_name']
+#   when: plz_code.user_input == ""
+
+- name: Get PLZ Name With jq
+  shell: jq .records[].fields.plz_name "{{ plz['file_destination'] }}"
+  register: jq
+
+- name: Debug PLZ Name (Dynamic). Example With jq Command
+  debug:
+    var: jq.stdout_lines

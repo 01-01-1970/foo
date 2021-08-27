@@ -1,0 +1,5 @@
+---
+- name: Install Packages
+  apt:
+    pkg={{ package_install }}
+    state=present

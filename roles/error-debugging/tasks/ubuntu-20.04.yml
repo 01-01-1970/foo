@@ -1,0 +1,48 @@
+---
+- name: Get Current Working Directory
+  set_fact:
+    current_dir: "{{ lookup('env', 'PWD') }}"
+
+# - name: List Directory Content
+#   shell: ls "{{ error_debugging['folder_list'] }}"
+#   register: dir_list_1
+#   ignore_errors: true
+
+- name: List Directory Content (Example Only With One File)
+  shell: LANG=C ls "{{ error_debugging['folder_list'] }}" 2>&1; echo -n
+  register: dir_list_2
+
+# - name: Create {{ current_dir }}/{{ error_debugging['folder'] }} Directory (Example Module file)
+#   local_action:
+#     module: file
+#     dest: "{{ current_dir }}/{{ error_debugging['folder'] }}"
+#     mode: '0777'
+#     state: directory
+
+- name: Create {{ current_dir }}/{{ error_debugging['folder'] }} Directory (Example Module raw)
+  local_action:
+    module: raw
+      mkdir -p -m '0777' "{{ current_dir }}/{{ error_debugging['folder'] }}"
+
+- name: Create std File (Example Only With One File)
+  local_action:
+    module: copy 
+    content: "{{ dir_list_2.stdout_lines }}"
+    dest: "{{ current_dir }}/{{ error_debugging['folder'] }}/std.txt"
+    mode: '0666'
+
+# - name: Create stderr File
+#   local_action:
+#     module: copy 
+#     content: "{{ dir_list_1.stderr_lines }}"
+#     dest: "{{ current_dir }}/{{ error_debugging['folder'] }}/stderr.txt"
+#     mode: '0666'
+#   when: dir_list_1.rc != 0
+
+# - name: Create stdout File
+#   local_action:
+#     module: copy 
+#     content: "{{ dir_list_1.stdout_lines }}"
+#     dest: "{{ current_dir }}/{{ error_debugging['folder'] }}/stdout.txt"
+#     mode: '0666'
+#   when: dir_list_1.rc == 0
